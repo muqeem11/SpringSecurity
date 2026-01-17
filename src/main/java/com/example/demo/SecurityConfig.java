@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -35,20 +37,24 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user1= User.withUsername("user1")
-                .password("{noop}password")
+//                .password("{noop}password")
+                .password(passwordEncoder().encode("password"))
                 .roles("USER")
                 .build();
         UserDetails admin=User.withUsername("admin")
-                .password("{noop}admin0password")
+           //     .password("{noop}admin0password")
+                .password(passwordEncoder().encode("admin0password"))
                 .roles( "ADMIN")
                 .build();
         UserDetails user2=User.withUsername("user2")
-                .password("{noop}user2password")
+//                .password("{noop}user2password")
+                .password(passwordEncoder().encode("user2password"))
                 .roles("USER")
                 .build();
 
         UserDetails user3=User.withUsername("user3")
-                .password("{noop}user3password")
+//                .password("{noop}user3password")
+                .password(passwordEncoder().encode("user3password"))
                 .roles("USER")
                 .build();
 
@@ -63,6 +69,10 @@ public class SecurityConfig {
        return userDetailsManager;
 
 
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 
