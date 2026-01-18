@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import javax.sql.DataSource;
@@ -28,6 +29,10 @@ import javax.sql.DataSource;
 public class SecurityConfig {
     @Autowired
     DataSource dataSource;
+
+    @Autowired
+    AuthTokenFilter authTokenFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)  {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -37,7 +42,9 @@ public class SecurityConfig {
                         .requestMatchers("/user/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/signin").permitAll()
                         .anyRequest().authenticated());
-     http.httpBasic(Customizer.withDefaults());
+//     http.httpBasic(Customizer.withDefaults());
+     http.addFilterBefore(authTokenFilter,
+             UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
     }
